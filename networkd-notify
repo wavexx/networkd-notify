@@ -6,6 +6,7 @@ from __future__ import print_function, division, generators, unicode_literals
 
 import argparse
 import subprocess
+import os
 
 import gi
 from gi.repository import GLib as glib
@@ -15,8 +16,8 @@ import dbus.mainloop.glib
 
 
 # Constants
-NETWORKCTL = '/bin/networkctl'
-IWCONFIG = '/sbin/iwconfig'
+NETWORKCTL = ['/usr/bin/networkctl', '/bin/networkctl']
+IWCONFIG = ['/usr/bin/iwconfig', '/sbin/iwconfig']
 APP_NAME  = 'networkd'
 
 STATE_IGN = {'carrier', 'degraded'}
@@ -32,6 +33,13 @@ NOTIFY_IF = None
 
 def notify(title, text, time=1000):
     NOTIFY_IF.Notify(APP_NAME, 0, '', title, text, '', '', time)
+
+
+def resolve_path(path_list):
+    for path in path_list:
+        if os.path.exists(path):
+            return path
+    return None
 
 
 def update_iface_map():
@@ -122,6 +130,9 @@ def property_changed(typ, data, _, path):
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='networkd notification daemon')
     args = ap.parse_args()
+
+    NETWORKCTL = resolve_path(NETWORKCTL)
+    IWCONFIG = resolve_path(IWCONFIG)
 
     # interfaces never change at runtime, right??
     update_iface_map()

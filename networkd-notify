@@ -6,7 +6,6 @@ from __future__ import print_function, division, generators, unicode_literals
 
 import argparse
 import subprocess
-import time
 
 import gi
 from gi.repository import GLib as glib
@@ -31,9 +30,8 @@ IFACE_MAP = {}
 NOTIFY_IF = None
 
 
-def notify(subject, body):
-    ntf = notify2.Notification(subject, body)
-    ntf.show()
+def notify(title, text, time=1000):
+    NOTIFY_IF.Notify(APP_NAME, 0, '', title, text, '', '', time)
 
 
 def update_iface_map():
@@ -138,7 +136,8 @@ if __name__ == '__main__':
 
     # dbus notify interface
     bus = dbus.SessionBus()
-    NOTIFY_ID = dbus.Interface(bus.get_object('org.freedesktop.Notifications', '/'),
+    NOTIFY_IF = dbus.Interface(bus.get_object('org.freedesktop.Notifications',
+                                              '/org/freedesktop/Notifications'),
                                'org.freedesktop.Notifications')
 
     # main loop

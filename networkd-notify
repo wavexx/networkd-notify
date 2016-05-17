@@ -116,7 +116,7 @@ def property_changed(typ, data, _, path):
                     continue
                 addrs.append(addr)
 
-        notify(iface, '{}\n{}'.format(hstate, ', '.join(addrs)))
+        notify(iface, '{}\n{}'.format(hstate, ', '.join(addrs)), 3000)
 
 
 if __name__ == '__main__':

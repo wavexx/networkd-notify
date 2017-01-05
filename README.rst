@@ -28,8 +28,8 @@ Dependencies
 
 The following software is currently required for `networkd-notify`:
 
-- Python (2.7 or 3.x)
-- Python GI (``python-gi``)
+- Python (3.x or 2.7)
+- PyGObject/PyGI (``python-gi``)
 - Python D-Bus (``python-dbus``)
 - ``wireless-tools``
 

@@ -42,6 +42,6 @@ Authors and Copyright
 ---------------------
 
 | `networkd-notify` is distributed under GPLv3+ (see COPYING) WITHOUT ANY WARRANTY.
-| Copyright(c) 2016 by wave++ "Yuri D'Elia" <wavexx@thregr.org>.
+| Copyright(c) 2016-2017 by wave++ "Yuri D'Elia" <wavexx@thregr.org>.
 
 .. _dunst: http://www.knopwob.org/dunst/

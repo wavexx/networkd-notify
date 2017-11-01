@@ -31,8 +31,16 @@ IFACE_MAP = {}
 NOTIFY_IF = None
 
 
+def refresh_notify_if(bus):
+    global NOTIFY_IF
+    NOTIFY_IF = dbus.Interface(bus.get_object('org.freedesktop.Notifications',
+                                              '/org/freedesktop/Notifications'),
+                               'org.freedesktop.Notifications')
+
+
 def notify(title, text, time=1000):
-    NOTIFY_IF.Notify(APP_NAME, 0, '', title, text, '', '', time)
+    if NOTIFY_IF:
+        NOTIFY_IF.Notify(APP_NAME, 0, '', title, text, '', '', time)
 
 
 def resolve_path(path_list):
@@ -127,6 +135,11 @@ def property_changed(typ, data, _, path):
         notify(iface, '{}\n{}'.format(hstate, ', '.join(addrs)), 3000)
 
 
+def name_owner_changed(name, old_owner, new_owner, path):
+    if name == 'org.freedesktop.Notifications':
+        refresh_notify_if(dbus.SessionBus())
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='networkd notification daemon')
     args = ap.parse_args()
@@ -137,7 +150,7 @@ if __name__ == '__main__':
     # interfaces never change at runtime, right??
     update_iface_map()
 
-    # listen on for networkd events
+    # listen on system-wide bus for networkd events
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
     bus.add_signal_receiver(property_changed,
@@ -145,11 +158,13 @@ if __name__ == '__main__':
                             signal_name='PropertiesChanged',
                             path_keyword='path')
 
-    # dbus notify interface
-    bus = dbus.SessionBus()
-    NOTIFY_IF = dbus.Interface(bus.get_object('org.freedesktop.Notifications',
-                                              '/org/freedesktop/Notifications'),
-                               'org.freedesktop.Notifications')
+    # register on session bus for notification daemon changes
+    sessionbus = dbus.SessionBus()
+    sessionbus.add_signal_receiver(name_owner_changed,
+                                   bus_name='org.freedesktop.DBus',
+                                   signal_name='NameOwnerChanged',
+                                   path_keyword='path')
+    refresh_notify_if(sessionbus)
 
     # main loop
     mainloop = glib.MainLoop()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # networkd-notify: desktop notification integration for systemd-networkd
 # Copyright(c) 2016 by wave++ "Yuri D'Elia" <wavexx@thregr.org>
 # Distributed under GPLv3+ (see COPYING) WITHOUT ANY WARRANTY.

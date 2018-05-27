@@ -6,6 +6,7 @@ from __future__ import print_function, division, generators, unicode_literals
 
 import argparse
 import subprocess
+import sys
 import os
 
 import gi
@@ -145,7 +146,12 @@ if __name__ == '__main__':
     args = ap.parse_args()
 
     NETWORKCTL = resolve_path(NETWORKCTL)
+    if NETWORKCTL is None:
+        sys.exit("networkctl binary not found")
+
     IWCONFIG = resolve_path(IWCONFIG)
+    if IWCONFIG is None:
+        sys.exit("iwconfig binary not found")
 
     # interfaces never change at runtime, right??
     update_iface_map()

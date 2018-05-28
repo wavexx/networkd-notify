@@ -107,6 +107,9 @@ def property_changed(typ, data, _, path):
     # http://thread.gmane.org/gmane.comp.sysutils.systemd.devel/36460
     idx = path[32:]
     idx = int(chr(int(idx[:2], 16)) + idx[2:])
+
+    if idx not in IFACE_MAP:
+        update_iface_map()
     iface = IFACE_MAP[idx]
 
     hstate = STATE_MAP.get(state, state)
